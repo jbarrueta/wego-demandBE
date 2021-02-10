@@ -8,6 +8,8 @@ from urllib.parse import urlparse, parse_qs
 # specifying a log file if you want to see a stream of log data in one file.
 logging.basicConfig(level=logging.DEBUG)
 tempDatabase = {'user': []}
+
+
 class TaasAppService(BaseHTTPRequestHandler):
 
     # HTTP Response code dictionary constant we can reuse inside our responses back to the client. Typically this
@@ -26,7 +28,8 @@ class TaasAppService(BaseHTTPRequestHandler):
         print(parsedPath)
         paramsDict = parse_qs(parsedPath.query)
         print(paramsDict)
-        logging.info('GET parameters received: ' + json.dumps(paramsDict, indent=4, sort_keys=True))
+        logging.info('GET parameters received: ' +
+                     json.dumps(paramsDict, indent=4, sort_keys=True))
         return paramsDict
 
     def extract_POST_Body(self):
@@ -37,7 +40,8 @@ class TaasAppService(BaseHTTPRequestHandler):
         # loads string into dict
         postBodyDict = json.loads(postBodyString)
         # json.dumps formats dict into string and then indent formats in a nice way
-        logging.info('POST Body received: ' + json.dumps(postBodyDict, indent=4, sort_keys=True))
+        logging.info('POST Body received: ' +
+                     json.dumps(postBodyDict, indent=4, sort_keys=True))
         return postBodyDict
 
     # The do_GET(self) function is how we respond to GET requests from clients.
@@ -95,8 +99,7 @@ class TaasAppService(BaseHTTPRequestHandler):
             tempDatabase['user'].append(postBody)
             print(tempDatabase)
             status = self.HTTP_STATUS_RESPONSE_CODES['OK'].value
-            responseBody['data'] = f"Thank you {postBody.fName} {postBody.lName}. You have been registered"
-
+            responseBody['data'] = f"Thank you {postBody['fName']} {postBody['lName']}. You have been registered"
 
         self.send_response(status)
         self.send_header("Content-type", "text/html")
@@ -106,10 +109,12 @@ class TaasAppService(BaseHTTPRequestHandler):
         # a string. When working with these types of data you can include an additional parameters in the dumps()
         # method, 'default=str' to let the serializer know to convert to a string when it encounters a data type
         # it doesn't automatically know how to convert.
-        response = json.dumps(responseBody, indent=4, sort_keys=True, default=str)
+        response = json.dumps(responseBody, indent=4,
+                              sort_keys=True, default=str)
         logging.info('Response: ' + response)
         byteStringResponse = response.encode('utf-8')
         self.wfile.write(byteStringResponse)
+
 
 # Turn the application server on at port 8082 on localhost and fork the process.
 if __name__ == '__main__':
@@ -130,7 +135,3 @@ if __name__ == '__main__':
 
     appServer.server_close()
     logging.info('Server stopped')
-
-
-
-
