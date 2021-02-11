@@ -86,7 +86,6 @@ class TaasAppService(BaseHTTPRequestHandler):
         # Extract the POST body data from the HTTP request, and store it into a Python
         # dictionary we can utilize inside of any of our POST endpoints.
         postBody = self.extract_POST_Body()
-        print(postBody)
         status = self.HTTP_STATUS_RESPONSE_CODES['NOT_FOUND'].value
 
         responseBody = {}
