@@ -8,6 +8,7 @@ class Customer:
         # TODO: somehow we will need to verify email does not exist in our database
         self.email = email
         # TODO: password will be hashed before saved into instance of object
+        #self.password = hashPassword(password)
         self.password = password
 
     def getName(self):
@@ -23,8 +24,8 @@ class Customer:
         print("CustomerID", customerID)
 
         # TODO: create session now
-
-        data = "build data response"
+        
+        data = {}
         return data
 
         # 4. Store a response using a container like the responseBody defined above

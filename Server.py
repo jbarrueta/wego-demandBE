@@ -104,10 +104,17 @@ class TaasAppService(BaseHTTPRequestHandler):
                 status = self.HTTP_STATUS_RESPONSE_CODES['OK'].value
 
                 # TODO: build responseBody
+                responseBody['data'] = data
             except Exception as err:
-                print("ERROR", err)
+                # except ValidationError as err:
+                #     status = self.HTTP_STATUS_RESPONSE_CODES['CLIENT_ERROR'].value
+                #     response['data'] = err
+                # except DatabaseError as err:
+                #     print("ERROR", err)
 
                 # TODO: add HTTP error status and build response body
+                status = ""
+                responseBody['data'] = ""
 
             status = self.HTTP_STATUS_RESPONSE_CODES['OK'].value
             responseBody['data'] = f"Thank you {postBody['fName']} {postBody['lName']}. You have been registered"
