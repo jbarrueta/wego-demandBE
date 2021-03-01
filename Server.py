@@ -3,11 +3,12 @@ import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from http import HTTPStatus
 from urllib.parse import urlparse, parse_qs
+from config.mongoConnect import mongoConnect
+from Class.Customer import Customer
 
 # Class Logger we can use for debugging our Python service. You can add an additional parameter here for
 # specifying a log file if you want to see a stream of log data in one file.
 logging.basicConfig(level=logging.DEBUG)
-tempDatabase = {'user': []}
 
 
 class TaasAppService(BaseHTTPRequestHandler):
@@ -90,13 +91,24 @@ class TaasAppService(BaseHTTPRequestHandler):
 
         responseBody = {}
         if path == '/registration':
-            # Implement your service here
-            # 1. Access POST parameters using your postBody
-            # 2. Open a new database connection
-            # 3. Read or write data from the database
-            # 4. Store a response using a container like the responseBody defined above
-            tempDatabase['user'].append(postBody)
-            print(tempDatabase)
+            # create instance of the Customer Class, Customer class will validate the information
+            try:
+                # 1. Access POST parameters using your postBody
+                customer = Customer(
+                    postBody["fName"], postBody["lName"], postBody["email"], postBody["passwd"])
+
+                # attempting to add user into DB with instance method
+                data = customer.registerUser()
+
+                # final step, no exception caught
+                status = self.HTTP_STATUS_RESPONSE_CODES['OK'].value
+
+                # TODO: build responseBody
+            except Exception as err:
+                print("ERROR", err)
+
+                # TODO: add HTTP error status and build response body
+
             status = self.HTTP_STATUS_RESPONSE_CODES['OK'].value
             responseBody['data'] = f"Thank you {postBody['fName']} {postBody['lName']}. You have been registered"
 
