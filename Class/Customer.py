@@ -21,6 +21,8 @@ class Customer:
 
 
        
+        #self.password = hashPassword(password)
+        self.password = password
 
     def getName(self):
         return self.first_name + self.last_name
@@ -35,8 +37,8 @@ class Customer:
         print("CustomerID", customerID)
 
         # TODO: create session now
-
-        data = "build data response"
+        
+        data = {}
         return data
 
         # 4. Store a response using a container like the responseBody defined above
