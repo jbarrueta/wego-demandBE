@@ -1,4 +1,5 @@
 from config.mongoConnect import mongoConnect
+import bcrypt
 
 
 class Customer:
@@ -8,7 +9,18 @@ class Customer:
         # TODO: somehow we will need to verify email does not exist in our database
         self.email = email
         # TODO: password will be hashed before saved into instance of object
-        self.password = password
+        self.password = password '   '
+        salt = bcrypt.gensalt(2)
+        hashed = bcrypt.hashpw(password, salt)
+        if bcrypt.checkpw(password, hashed):
+            print("match")
+        else:
+            print("does not match")
+
+
+
+
+       
 
     def getName(self):
         return self.first_name + self.last_name
