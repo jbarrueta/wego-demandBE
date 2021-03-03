@@ -9,37 +9,31 @@ class Customer:
         # TODO: somehow we will need to verify email does not exist in our database
         self.email = email
         # TODO: password will be hashed before saved into instance of object
-        self.password = password '   '
-        salt = bcrypt.gensalt(2)
-        hashed = bcrypt.hashpw(password, salt)
-        if bcrypt.checkpw(password, hashed):
-            print("match")
-        else:
-            print("does not match")
+        self.password = hashPassword(password)
 
-
-
-
-       
-        #self.password = hashPassword(password)
-        self.password = password
-
-    def getName(self):
-        return self.first_name + self.last_name
+    def getFirstName(self):
+        return self.first_name
+    
+    def getLastName(self):
+        return  self.last_name
 
     def registerUser(self):
+        response = {}
         # 2. Open a new database connection
         client = mongoConnect()
         # 3. write data from the database
         db = client.team12_demand
         customer = db.customer
-        customerID = customer.insert_one(self.__dict__).inserted_id
-        print("CustomerID", customerID)
-
+        if (customer.count_documents({"email": self.email}) == 0):
+            customerID = customer.insert_one(self.__dict__).inserted_id
+            print("CustomerID", customerID)
+            response = {"status": "OK", "data": {"email": self.email}}
+        else:
+            response = {"status": "CONFLICT", "data": {"msg": "Email is already registered"}}
         # TODO: create session now
         
-        data = {}
-        return data
+        return response
+    
 
         # 4. Store a response using a container like the responseBody defined above
 

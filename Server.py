@@ -19,6 +19,7 @@ class TaasAppService(BaseHTTPRequestHandler):
         'OK': HTTPStatus.OK,
         'FORBIDDEN': HTTPStatus.FORBIDDEN,
         'NOT_FOUND': HTTPStatus.NOT_FOUND,
+        'CONFLICT' : HTTPStatus.CONFLICT
     }
 
     # Here's how you extract GET parameters from a URL entered by a client.
