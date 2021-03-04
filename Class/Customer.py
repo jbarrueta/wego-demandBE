@@ -9,7 +9,8 @@ class Customer:
         # TODO: somehow we will need to verify email does not exist in our database
         self.email = email
         # TODO: password will be hashed before saved into instance of object
-        self.password = hashPassword(password)
+        # self.password = hashPassword(password)
+        self.password = password
 
     def getFirstName(self):
         return self.first_name
