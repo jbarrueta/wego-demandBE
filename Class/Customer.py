@@ -10,7 +10,7 @@ class Customer:
         self.email = email
         # TODO: password will be hashed before saved into instance of object
         # self.password = hashPassword(password)
-        self.password = password
+    
 
     def getFirstName(self):
         return self.first_name
@@ -46,3 +46,9 @@ class Customer:
 
         # def createSession(self):
         #     #
+def hashedPassword(password)
+
+    salt = bcrypt.gensalt(2)
+    hashed = bcrypt.hashpw(password, salt)
+       
+    return hashed
