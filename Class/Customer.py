@@ -8,8 +8,7 @@ class Customer:
         self.last_name = last_name
         # TODO: somehow we will need to verify email does not exist in our database
         self.email = email
-        # TODO: password will be hashed before saved into instance of object
-        # self.password = hashPassword(password)
+        self.password = hashPassword(password)
     
 
     def getFirstName(self):
@@ -46,7 +45,7 @@ class Customer:
 
         # def createSession(self):
         #     #
-def hashedPassword(password)
+def hashPassword(password):
 
     salt = bcrypt.gensalt(2)
     hashed = bcrypt.hashpw(password, salt)
