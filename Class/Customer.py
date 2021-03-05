@@ -20,19 +20,20 @@ class Customer:
 
     def registerUser(self):
         response = {}
-        # 2. Open a new database connection
-        client = mongoConnect()
-        # 3. write data from the database
-        db = client.team12_demand
-        customer = db.customer
-        if (customer.count_documents({"email": self.email}) == 0):
-            customerID = customer.insert_one(self.__dict__).inserted_id
-            print("CustomerID", customerID)
-            response = {"status": "OK", "data": {"email": self.email}}
-        else:
-            response = {"status": "CONFLICT", "data": {"msg": "Email is already registered"}}
-        # TODO: create session now
-        
+        try:
+            # 2. Open a new database connection
+            client = mongoConnect()
+            # 3. write data from the database
+            db = client.team12_demand
+            customer = db.customer
+            if (customer.count_documents({"email": self.email}) == 0):
+                customerID = customer.insert_one(self.__dict__).inserted_id
+                response = {"status": "OK", "data": {"email": self.email, "id": customerID}}
+            else:
+                response = {"status": "CONFLICT", "data": {"msg": "Email is already registered"}}
+            # TODO: create session now
+        except Exception as err:
+            response = {"status": "INTERNAL_SERVER_ERROR", "data": {"msg": "Server stopped working, please try again later"}}
         return response
     
 

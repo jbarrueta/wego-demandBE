@@ -19,7 +19,8 @@ class TaasAppService(BaseHTTPRequestHandler):
         'OK': HTTPStatus.OK,
         'FORBIDDEN': HTTPStatus.FORBIDDEN,
         'NOT_FOUND': HTTPStatus.NOT_FOUND,
-        'CONFLICT' : HTTPStatus.CONFLICT
+        'CONFLICT' : HTTPStatus.CONFLICT,
+        'INTERNAL_SERVER_ERROR': HTTPStatus.INTERNAL_SERVER_ERROR
     }
 
     # Here's how you extract GET parameters from a URL entered by a client.
@@ -93,32 +94,16 @@ class TaasAppService(BaseHTTPRequestHandler):
         responseBody = {}
         if path == '/registration':
             # create instance of the Customer Class, Customer class will validate the information
-            try:
-                # 1. Access POST parameters using your postBody
-                customer = Customer(
-                    postBody["fName"], postBody["lName"], postBody["email"], postBody["passwd"])
+            
+            # 1. Access POST parameters using your postBody
+            customer = Customer(
+                postBody["fName"], postBody["lName"], postBody["email"], postBody["passwd"])
 
-                # attempting to add user into DB with instance method
-                data = customer.registerUser()
+            # attempting to add user into DB with instance method
+            responseBody = customer.registerUser()
 
-                # final step, no exception caught
-                status = self.HTTP_STATUS_RESPONSE_CODES['OK'].value
-
-                # TODO: build responseBody
-                responseBody['data'] = data
-            except Exception as err:
-                # except ValidationError as err:
-                #     status = self.HTTP_STATUS_RESPONSE_CODES['CLIENT_ERROR'].value
-                #     response['data'] = err
-                # except DatabaseError as err:
-                #     print("ERROR", err)
-
-                # TODO: add HTTP error status and build response body
-                status = ""
-                responseBody['data'] = ""
-
-            status = self.HTTP_STATUS_RESPONSE_CODES['OK'].value
-            responseBody['data'] = f"Thank you {postBody['fName']} {postBody['lName']}. You have been registered"
+            # final step, no exception caught
+            status = self.HTTP_STATUS_RESPONSE_CODES[responseBody["status"]].value
 
         self.send_response(status)
         self.send_header("Content-type", "text/html")
