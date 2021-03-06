@@ -36,10 +36,25 @@ class Customer:
             response = {"status": "INTERNAL_SERVER_ERROR", "data": {"msg": "Server stopped working, please try again later"}}
         return response
     
+    def loginUser(self):
+        response = {}
+        try: 
+            client = mongoConnect()
+            db = client.team12_demand
+            customer = db.customer
+            user = customer.find_one({"email": self.email})
+            if (user != None):
+                if (user["password"] == self.password):
+                    response = {"status": "OK", "data": {"email": self.email, "id": user["_id"]}}
+                else:
+                    response = {"status": "CONFLICT", "data": {"msg": "Passwords do not match"}}
+            else:
+                # change 
+                response = {"status": "CONFLICT", "data": {"msg": "Email is not registered"}}
+        except Exception as err:
+            response = {"status": "INTERNAL_SERVER_ERROR", "data": {"msg": "Server stopped working, please try again later"}}
+        return response
 
-        # 4. Store a response using a container like the responseBody defined above
-
-        # def loginUser(self):
         #     #
 
         # def createOrder(self):

@@ -104,6 +104,12 @@ class TaasAppService(BaseHTTPRequestHandler):
 
             # final step, no exception caught
             status = self.HTTP_STATUS_RESPONSE_CODES[responseBody["status"]].value
+        
+        elif path == '/login':
+            customer = Customer(
+                postBody["fName"], postBody["lName"], postBody["email"], postBody["passwd"])
+            responseBody = customer.loginUser()
+            status = self.HTTP_STATUS_RESPONSE_CODES[responseBody["status"]].value
 
         self.send_response(status)
         self.send_header("Content-type", "text/html")
