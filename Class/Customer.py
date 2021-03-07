@@ -42,15 +42,11 @@ class Customer:
             client = mongoConnect()
             db = client.team12_demand
             customer = db.customer
-            user = customer.find_one({"email": self.email})
+            user = customer.find_one({"email": self.email, "password": self.password})
             if (user != None):
-                if (user["password"] == self.password):
-                    response = {"status": "OK", "data": {"email": self.email, "id": user["_id"]}}
-                else:
-                    response = {"status": "CONFLICT", "data": {"msg": "Passwords do not match"}}
+                response = {"status": "OK", "data": {"email": self.email, "id": user["_id"]}}
             else:
-                # change 
-                response = {"status": "CONFLICT", "data": {"msg": "Email is not registered"}}
+                response = {"status": "CONFLICT", "data": {"msg": "Credentials incorrect"}}
         except Exception as err:
             response = {"status": "INTERNAL_SERVER_ERROR", "data": {"msg": "Server stopped working, please try again later"}}
         return response
