@@ -96,8 +96,7 @@ class TaasAppService(BaseHTTPRequestHandler):
             # create instance of the Customer Class, Customer class will validate the information
             
             # 1. Access POST parameters using your postBody
-            customer = Customer(
-                postBody["fName"], postBody["lName"], postBody["email"], postBody["passwd"])
+            customer = Customer(postBody['email'], first_name=postBody['fName'], last_name=postBody['lName'], password=postBody['passwd'])
 
             # attempting to add user into DB with instance method
             responseBody = customer.registerUser()
@@ -106,8 +105,7 @@ class TaasAppService(BaseHTTPRequestHandler):
             status = self.HTTP_STATUS_RESPONSE_CODES[responseBody["status"]].value
         
         elif path == '/login':
-            customer = Customer(
-                postBody["fName"], postBody["lName"], postBody["email"], postBody["passwd"])
+            customer = Customer(postBody["email"], password=postBody["passwd"])
             responseBody = customer.loginUser()
             status = self.HTTP_STATUS_RESPONSE_CODES[responseBody["status"]].value
 

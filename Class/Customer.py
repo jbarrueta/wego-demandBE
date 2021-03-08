@@ -3,7 +3,7 @@ import bcrypt
 
 
 class Customer:
-    def __init__(self, first_name, last_name, email, password):
+    def __init__(self, email, first_name=None, last_name=None, password=None):
         self.first_name = first_name
         self.last_name = last_name
         # TODO: somehow we will need to verify email does not exist in our database
@@ -14,9 +14,15 @@ class Customer:
 
     def getFirstName(self):
         return self.first_name
+
+    def setFirstName(self, first_name):
+        self.first_name = first_name
     
     def getLastName(self):
         return  self.last_name
+
+    def setLastName(self, last_name):
+        self.last_name = last_name
 
     def registerUser(self):
         response = {}
@@ -44,6 +50,8 @@ class Customer:
             customer = db.customer
             user = customer.find_one({"email": self.email, "password": self.password})
             if (user != None):
+                self.setFirstName(user.first_name)
+                self.setLastName(user.last_name)
                 response = {"status": "OK", "data": {"email": self.email, "id": user["_id"]}}
             else:
                 response = {"status": "CONFLICT", "data": {"msg": "Credentials incorrect"}}
