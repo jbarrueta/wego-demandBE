@@ -34,7 +34,7 @@ class Customer:
             customer = db.customer
             if (customer.count_documents({"email": self.email}) == 0):
                 customerID = customer.insert_one(self.__dict__).inserted_id
-                response = {"status": "OK", "data": {"email": self.email, "id": customerID}}
+                response = {"status": "OK", "data": {"email": self.email, 'fName': self.first_name, 'lName': self.last_name, "id": customerID}}
             else:
                 response = {"status": "CONFLICT", "data": {"msg": "Email is already registered"}}
             # TODO: create session now
