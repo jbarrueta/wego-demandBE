@@ -50,9 +50,9 @@ class Customer:
             customer = db.customer
             user = customer.find_one({"email": self.email, "password": self.password})
             if (user != None):
-                self.setFirstName(user.first_name)
-                self.setLastName(user.last_name)
-                response = {"status": "OK", "data": {"email": self.email, "id": user["_id"]}}
+                self.setFirstName(user['first_name'])
+                self.setLastName(user['last_name'])
+                response = {"status": "OK", "data": {"email": self.email, 'fName': self.first_name, 'lName': self.last_name, "id": user["_id"]}}
             else:
                 response = {"status": "CONFLICT", "data": {"msg": "Credentials incorrect"}}
         except Exception as err:
