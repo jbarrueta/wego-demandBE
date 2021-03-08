@@ -69,6 +69,5 @@ def hashPassword(password):
 
     salt = bcrypt.gensalt()
     hashed = bcrypt.hashpw(password.encode(), salt)
-    print(hashed)
        
     return hashed
