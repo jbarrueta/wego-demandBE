@@ -8,7 +8,7 @@ class Customer:
         self.last_name = last_name
         # TODO: somehow we will need to verify email does not exist in our database
         self.email = email
-        self.password = hashPassword(password)
+        self.password = password
     
 
     def getFirstName(self):
@@ -32,7 +32,9 @@ class Customer:
             db = client.team12_demand
             customer = db.customer
             if (customer.count_documents({"email": self.email}) == 0):
-                customerID = customer.insert_one(self.__dict__).inserted_id
+                customerObj = self.__dict__
+                customerObj['password'] = hashPassword(self.password)
+                customerID = customer.insert_one(customerObj).inserted_id
                 response = {"status": "OK", "data": {"email": self.email, 'fName': self.first_name, 'lName': self.last_name, "id": customerID}}
             else:
                 response = {"status": "CONFLICT", "data": {"msg": "Email is already registered"}}
@@ -47,14 +49,17 @@ class Customer:
             client = mongoConnect()
             db = client.team12_demand
             customer = db.customer
-            user = customer.find_one({"email": self.email, "password": self.password})
-            if (user != None):
+            user = customer.find_one({"email": self.email})
+            print(user)
+            # checkPassword() will return T/F
+            if (user != None and checkPassword(self.password, user['password'])):
                 self.setFirstName(user['first_name'])
                 self.setLastName(user['last_name'])
                 response = {"status": "OK", "data": {"email": self.email, 'fName': self.first_name, 'lName': self.last_name, "id": user["_id"]}}
             else:
                 response = {"status": "CONFLICT", "data": {"msg": "Credentials incorrect"}}
         except Exception as err:
+            print(err)
             response = {"status": "INTERNAL_SERVER_ERROR", "data": {"msg": "Server stopped working, please try again later"}}
         return response
 
@@ -69,5 +74,8 @@ def hashPassword(password):
 
     salt = bcrypt.gensalt()
     hashed = bcrypt.hashpw(password.encode(), salt)
-       
+    
     return hashed
+
+def checkPassword(password, hashed):
+    return bcrypt.checkpw(password.encode(), hashed)
