@@ -67,7 +67,8 @@ class Customer:
         #     #
 def hashPassword(password):
 
-    salt = bcrypt.gensalt(2)
-    hashed = bcrypt.hashpw(password, salt)
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password.encode(), salt)
+    print(hashed)
        
     return hashed
