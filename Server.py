@@ -5,6 +5,7 @@ from http import HTTPStatus
 from urllib.parse import urlparse, parse_qs
 from config.mongoConnect import mongoConnect
 from Class.Customer import Customer
+from Controllers.CustomerController import CustomerController
 
 # Class Logger we can use for debugging our Python service. You can add an additional parameter here for
 # specifying a log file if you want to see a stream of log data in one file.
@@ -97,16 +98,22 @@ class TaasAppService(BaseHTTPRequestHandler):
             
             # 1. Access POST parameters using your postBody
             customer = Customer(postBody['email'], first_name=postBody['fName'], last_name=postBody['lName'], password=postBody['passwd'])
+            customerDict = customer.get_register_data()
 
-            # attempting to add user into DB with instance method
-            responseBody = customer.registerUser()
+            # attempting to add user into DB with Controllers.CustomerController
+            responseBody = registerUser(customerDict)
 
-            # final step, no exception caught
+            # set status
             status = self.HTTP_STATUS_RESPONSE_CODES[responseBody["status"]].value
         
         elif path == '/login':
             customer = Customer(postBody["email"], password=postBody["passwd"])
-            responseBody = customer.loginUser()
+            email, password = customer.get_login_data()
+
+            # attempting to find user credentials with DB with method in Controllers.CustomerController
+            responseBody = loginUser(email, password)
+
+            # set status
             status = self.HTTP_STATUS_RESPONSE_CODES[responseBody["status"]].value
 
         self.send_response(status)
