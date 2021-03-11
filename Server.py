@@ -5,7 +5,7 @@ from http import HTTPStatus
 from urllib.parse import urlparse, parse_qs
 from config.mongoConnect import mongoConnect
 from Class.Customer import Customer
-from Controllers.CustomerController import CustomerController
+from Controllers.CustomerController import registerUser, loginUser
 
 # Class Logger we can use for debugging our Python service. You can add an additional parameter here for
 # specifying a log file if you want to see a stream of log data in one file.
