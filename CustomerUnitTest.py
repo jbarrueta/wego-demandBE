@@ -1,7 +1,9 @@
 # Unit test for Customer Class
+import sys
 import unittest
+sys.path.append("..")
 from Class.Customer import Customer
- 
+
 class TestCustomer(unittest.TestCase):
       def setUp(self):
           self.customer = Customer("test@test.com", "Testf", "Testl", "testpass")
@@ -52,8 +54,11 @@ class TestEmailPass(TestCustomer):
 
 class TestGetRegisterLoginData(TestCustomer):
     def test_get_register_data(self):
-        registerData = {email : "test@test.com", first_name : "Testf", last_name: "Testl", password : "testpass"}
+        registerData = {'email' : "test@test.com", 'first_name' : "Testf", "last_name": "Testl", "password" : "testpass"}
         self.assertEqual(self.customer.get_register_data(), registerData)
     
     def test_get_login_data(self):
-        self.assertEqual(self.customer.get_login_data(), "test@test.com", "testpass")
+        self.assertEqual(self.customer.get_login_data(), ("test@test.com", "testpass"))
+
+if __name__ == '__main__':
+    unittest.main()
