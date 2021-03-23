@@ -3,9 +3,8 @@ import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from http import HTTPStatus
 from urllib.parse import urlparse, parse_qs
-from config.mongoConnect import mongoConnect
-from Class.Customer import Customer
-from Controllers.CustomerController import registerUser, loginUser
+from classes.customer import Customer
+from controllers.customer import registerUser, loginUser
 
 # Class Logger we can use for debugging our Python service. You can add an additional parameter here for
 # specifying a log file if you want to see a stream of log data in one file.
@@ -20,18 +19,15 @@ class TaasAppService(BaseHTTPRequestHandler):
         'OK': HTTPStatus.OK,
         'FORBIDDEN': HTTPStatus.FORBIDDEN,
         'NOT_FOUND': HTTPStatus.NOT_FOUND,
-        'CONFLICT' : HTTPStatus.CONFLICT,
+        'CONFLICT': HTTPStatus.CONFLICT,
         'INTERNAL_SERVER_ERROR': HTTPStatus.INTERNAL_SERVER_ERROR
     }
 
     # Here's how you extract GET parameters from a URL entered by a client.
     def extract_GET_parameters(self):
         path = self.path
-        print(path)
         parsedPath = urlparse(path)
-        print(parsedPath)
         paramsDict = parse_qs(parsedPath.query)
-        print(paramsDict)
         logging.info('GET parameters received: ' +
                      json.dumps(paramsDict, indent=4, sort_keys=True))
         return paramsDict
@@ -43,9 +39,11 @@ class TaasAppService(BaseHTTPRequestHandler):
         postBodyString = self.rfile.read(postBodyLength)
         # loads string into dict
         postBodyDict = json.loads(postBodyString)
+        # exclude logging sensitive info
+        blacklist = ["password"]
         # json.dumps formats dict into string and then indent formats in a nice way
         logging.info('POST Body received: ' +
-                     json.dumps(postBodyDict, indent=4, sort_keys=True))
+                     json.dumps({k: postBodyDict[k] for k in set(list(postBodyDict.keys())) - set(blacklist)}, indent=4, sort_keys=True))
         return postBodyDict
 
     # The do_GET(self) function is how we respond to GET requests from clients.
@@ -95,9 +93,10 @@ class TaasAppService(BaseHTTPRequestHandler):
         responseBody = {}
         if path == '/registration':
             # create instance of the Customer Class, Customer class will validate the information
-            
+
             # 1. Access POST parameters using your postBody
-            customer = Customer(postBody['email'], first_name=postBody['fName'], last_name=postBody['lName'], password=postBody['passwd'])
+            customer = Customer(postBody['email'], first_name=postBody['firstName'],
+                                last_name=postBody['lastName'], password=postBody['password'])
             customerDict = customer.get_register_data()
 
             # attempting to add user into DB with Controllers.CustomerController
@@ -105,9 +104,10 @@ class TaasAppService(BaseHTTPRequestHandler):
 
             # set status
             status = self.HTTP_STATUS_RESPONSE_CODES[responseBody["status"]].value
-        
+
         elif path == '/login':
-            customer = Customer(postBody["email"], password=postBody["passwd"])
+            customer = Customer(postBody["email"],
+                                password=postBody["password"])
             email, password = customer.get_login_data()
 
             # attempting to find user credentials with DB with method in Controllers.CustomerController
