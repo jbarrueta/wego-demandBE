@@ -1,3 +1,5 @@
+from controllers.order import requestOrder
+from classes.order import Order
 import logging
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -115,6 +117,14 @@ class TaasAppService(BaseHTTPRequestHandler):
 
             # set status
             status = self.HTTP_STATUS_RESPONSE_CODES[responseBody["status"]].value
+
+        elif path == '/order/request':
+            order = Order(postBody["serviceType"], postBody["pickupAddress"], postBody["dropoffAddress"], postBody["customerId"])
+
+            responseBody = requestOrder(order.__dict__)
+
+            status = self.HTTP_STATUS_RESPONSE_CODES[responseBody["status"]].value
+
 
         self.send_response(status)
         self.send_header("Content-type", "text/html")
