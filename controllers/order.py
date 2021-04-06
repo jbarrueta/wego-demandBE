@@ -8,10 +8,11 @@ def requestOrder(orderObj):
         client = mongoConnect()
         db = client.team12_demand
         orders = db.orders
-        
+        publicId = orders.count_documents({}) + 1000
+        orderObj["pulbicId"] = publicId
         orderId = orders.insert_one(orderObj).inserted_id
         response = {'status': 'OK', 'data': {
-                "id": orderId, "status": orderObj["status"]}}
+                "id": orderId, "publicId": publicId, "status": orderObj["status"]}}
     except Exception as err:
         logging.error(err)
         response = {'status': 'INTERNAL_SERVER_ERROR', 'data': {
