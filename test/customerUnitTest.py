@@ -1,8 +1,8 @@
 # Unit test for Customer Class
-from classes.customer import Customer
 import sys
 import unittest
 sys.path.append("..")
+from classes.customer import Customer
 
 
 class TestCustomer(unittest.TestCase):
