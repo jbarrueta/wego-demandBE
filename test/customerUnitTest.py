@@ -4,6 +4,7 @@ sys.path.append("..")
 from classes.customer import Customer
 import unittest
 
+
 class TestCustomer(unittest.TestCase):
     def setUp(self):
         self.customer = Customer("test@test.com", "Testf", "Testl", "testpass")
