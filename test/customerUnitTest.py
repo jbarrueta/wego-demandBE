@@ -1,9 +1,3 @@
-# Unit test for Customer Class
-import sys
-import unittest
-sys.path.append("..")
-from classes.customer import Customer
-
 
 class TestCustomer(unittest.TestCase):
     def setUp(self):
