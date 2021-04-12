@@ -21,8 +21,8 @@ def requestOrder(orderObj):
         ########################################################################
 
         #### Uncomment this block when supply is up on server ####
-         routeResponse = requests.get(f"http://localhost:8081/vehicles/req?service_type={orderObj['serviceType']}&order_id={orderId}&customer_id={orderObj['customerId']}&destination={address1}")
-         routeResponse = requests.get(f"https://supply.team12.sweispring21.tk/api/vehicles/req?req?service_type={orderObj['serviceType']}&order_id={orderId}&customer_id={orderObj['customerId']}&destination={address1}")
+        # routeResponse = requests.get(f"http://localhost:8081/vehicles/req?service_type={orderObj['serviceType']}&order_id={orderId}&customer_id={orderObj['customerId']}&destination={address1}")
+         routeResponse = requests.get(f"https://supply.team12.sweispring21.tk/api/vehicles/req?service_type={orderObj['serviceType']}&order_id={orderId}&customer_id={orderObj['customerId']}&destination={address1}")
          routeObj = routeResponse.json()["data"]
          response = {'status': 'OK', 'data': {
               "id": orderId, "publicId": publicId, "status": orderObj["status"], "routeObj": routeObj}}
