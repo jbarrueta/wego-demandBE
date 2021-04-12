@@ -1,3 +1,8 @@
+import sys
+sys.path.append("..")
+# Unit test for Customer Class
+from classes.customer import Customer
+import unittest
 
 class TestCustomer(unittest.TestCase):
     def setUp(self):
