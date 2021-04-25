@@ -1,10 +1,10 @@
-from controllers.order import requestOrder, updateVehicle
+from controllers.order import getOrders, requestOrder, updateOrder
 from classes.order import Order
 import logging
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from http import HTTPStatus
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import parse_qsl, urlparse
 from classes.customer import Customer
 from controllers.customer import registerUser, loginUser
 
@@ -29,7 +29,7 @@ class TaasAppService(BaseHTTPRequestHandler):
     def extract_GET_parameters(self):
         path = self.path
         parsedPath = urlparse(path)
-        paramsDict = parse_qs(parsedPath.query)
+        paramsDict = dict(parse_qsl(parsedPath.query))
         logging.info('GET parameters received: ' +
                      json.dumps(paramsDict, indent=4, sort_keys=True))
         return paramsDict
@@ -62,13 +62,16 @@ class TaasAppService(BaseHTTPRequestHandler):
         if path == '/':
             status = self.HTTP_STATUS_RESPONSE_CODES['OK'].value
             responseBody['data'] = 'Hello world'
+        if '/order' in path:
+            print("in endpoint")
+            responseBody = getOrders(paramsDict)
+            status = self.HTTP_STATUS_RESPONSE_CODES[responseBody["status"]].value
+            # We can define other GET API endpoints here like so. See that when we can utilize the 'in' operator
+            # in Python here to match the string prefix of a URL, which comes in handy when our request URL's have GET
+            # parameters associated with them.
 
-        # We can define other GET API endpoints here like so. See that when we can utilize the 'in' operator
-        # in Python here to match the string prefix of a URL, which comes in handy when our request URL's have GET
-        # parameters associated with them.
-
-        # This will add a response header to the header buffer. Here, we are simply sending back
-        # an HTTP response header with an HTTP status code to the client.
+            # This will add a response header to the header buffer. Here, we are simply sending back
+            # an HTTP response header with an HTTP status code to the client.
         self.send_response(status)
         # This will add a header to the header buffer included in our HTTP response. Here we are specifying
         # the data Content-type of our response from the server to the client.
@@ -77,7 +80,8 @@ class TaasAppService(BaseHTTPRequestHandler):
         # any more headers back to the client after the line below.
         self.end_headers()
         # Convert the Key-value python dictionary into a string which we'll use to respond to this request
-        response = json.dumps(responseBody)
+        response = json.dumps(responseBody, indent=4,
+                              sort_keys=True, default=str)
         logging.info('Response: ' + response)
         # Fill the output stream with our encoded response string which will be returned to the client.
         # The wfile.write() method will only accept bytes data.
@@ -119,16 +123,14 @@ class TaasAppService(BaseHTTPRequestHandler):
             status = self.HTTP_STATUS_RESPONSE_CODES[responseBody["status"]].value
 
         elif path == '/order/request':
-            
 
             responseBody = requestOrder(postBody)
 
             status = self.HTTP_STATUS_RESPONSE_CODES[responseBody["status"]].value
 
-        elif path == '/vehicle/update':
-            responseBody = updateVehicle(postBody)
+        elif path == '/order/update':
+            responseBody = updateOrder(postBody)
             status = self.HTTP_STATUS_RESPONSE_CODES[responseBody['status']].value
-
 
         self.send_response(status)
         self.send_header("Content-type", "text/html")

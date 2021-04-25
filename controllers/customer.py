@@ -21,6 +21,10 @@ def registerUser(customerData):
             response = {'status': 'CONFLICT', 'data': {
                 'msg': 'Email is already registered'}}
         # TODO: create session now
+    except ValueError as err:
+        response = {'status': 'CONFLICT', 'data': {
+            'msg': err
+        }}
     except Exception as err:
         logging.error(err)
         response = {'status': 'INTERNAL_SERVER_ERROR', 'data': {
@@ -46,6 +50,10 @@ def loginUser(email, password):
         else:
             response = {'status': 'CONFLICT', 'data': {
                 'msg': 'Credentials incorrect'}}
+    except ValueError as err:
+        response = {'status': 'CONFLICT', 'data': {
+            'msg': err
+        }}
     except Exception as err:
         logging.error(err)
         response = {'status': 'INTERNAL_SERVER_ERROR', 'data': {
