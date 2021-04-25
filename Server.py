@@ -1,4 +1,4 @@
-from controllers.order import requestOrder
+from controllers.order import requestOrder, updateVehicle
 from classes.order import Order
 import logging
 import json
@@ -119,11 +119,15 @@ class TaasAppService(BaseHTTPRequestHandler):
             status = self.HTTP_STATUS_RESPONSE_CODES[responseBody["status"]].value
 
         elif path == '/order/request':
-            order = Order(postBody["serviceType"], postBody["pickupAddress"], postBody["dropoffAddress"], postBody["customerId"])
+            
 
-            responseBody = requestOrder(order.__dict__)
+            responseBody = requestOrder(postBody)
 
             status = self.HTTP_STATUS_RESPONSE_CODES[responseBody["status"]].value
+
+        elif path == '/vehicle/update':
+            responseBody = updateVehicle(postBody)
+            status = self.HTTP_STATUS_RESPONSE_CODES[responseBody['status']].value
 
 
         self.send_response(status)

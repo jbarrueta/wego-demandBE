@@ -1,11 +1,14 @@
+import json
 import logging
 import requests
 from classes.order import Order
 from mongo.mongoConfig import mongoConnect
 
-def requestOrder(orderObj):
+def requestOrder(postBody):
     response = {}
     try:
+        order = Order(postBody["serviceType"], postBody["pickupAddress"], postBody["dropoffAddress"], postBody["customerId"])
+        orderObj = order.__dict__
         client = mongoConnect()
         db = client.team12_demand
         orders = db.orders
@@ -21,11 +24,40 @@ def requestOrder(orderObj):
         ########################################################################
 
         #### Uncomment this block when supply is up on server ####
-        # routeResponse = requests.get(f"http://localhost:8081/vehicles/req?service_type={orderObj['serviceType']}&order_id={orderId}&customer_id={orderObj['customerId']}&destination={address1}")
-        routeResponse = requests.get(f"https://supply.team12.sweispring21.tk/api/vehicles/req?service_type={orderObj['serviceType']}&order_id={orderId}&customer_id={orderObj['customerId']}&destination={address1}")
-        routeObj = routeResponse.json()["data"]
-        response = {'status': 'OK', 'data': {
-            "id": orderId, "publicId": publicId, "status": orderObj["status"], "routeObj": routeObj}}
+        routeResponse = requests.get(f"http://localhost:8081/vehicles/req?service_type={orderObj['serviceType']}&order_id={orderId}&customer_id={orderObj['customerId']}&destination={address1}")
+        # routeResponse = requests.get(f"https://supply.team12.sweispring21.tk/api/vehicles/req?service_type={orderObj['serviceType']}&order_id={orderId}&customer_id={orderObj['customerId']}&destination={address1}")
+        ########################################################################
+        responseObj = routeResponse.json()            
+        routeObj = responseObj["data"]
+        if responseObj['status'] == "OK":
+            order.setStatus("vehicle on route")
+            response = {'status': responseObj['status'], 'data': {
+                "id": orderId, "publicId": publicId, "status": order.getStatus(), "routeObj": routeObj}}
+        else:
+            response = {'status': responseObj['status'], 'data': responseObj['data']}
+            order.setStatus("unfulfilled")
+
+        orders.update_one({"_id": orderId}, {"$set": {"status": order.getStatus()}})
+
+    except Exception as err:
+        logging.error(err)
+        response = {'status': 'INTERNAL_SERVER_ERROR', 'data': {
+            'msg': 'Server stopped working, please try again later'}}
+
+    return response 
+
+def updateVehicle(postBody):
+    response = {}
+    try:
+        requestObj = {"vehicle_id": str(postBody['vehicle_id']), 'current_location': postBody['current_location'], 'vehicle_status': postBody['vehicle_status']}
+        print(requestObj)
+        #### Uncomment this block when supply is up on server ####
+        updateResponse = requests.post("http://localhost:8081/vehicle/update", json.dumps(requestObj))
+        # updateResponse = requests.post("https://supply.team12.sweispring21.tk/api/vehicle/update", {"vehicle_id": postBody['vehicle_id'], 'current_location': postBody['current_location'], 'vehicle_status': postBody['vehicle_status']})
+        responseObj = updateResponse.json()            
+        updateObj = responseObj["data"]
+        print(updateObj)
+        response = {'status': responseObj['status'], 'data': updateObj}
         ########################################################################
 
     except Exception as err:
