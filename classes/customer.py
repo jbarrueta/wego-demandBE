@@ -1,12 +1,14 @@
 import re
 # Customer class
 class Customer:
-    def __init__(self, email, first_name=None, last_name=None, password=None):
+    def __init__(self, email=None, first_name=None, last_name=None, password=None):
         if not(first_name == None or last_name == None):
             self.setFirstName(first_name)
             self.setLastName(last_name)
-        self.setEmail(email)
-        self.setPassword(password)
+        if email != None:
+            self.setEmail(email)
+        if password != None:
+            self.setPassword(password)
     
     def setFirstName(self, first_name):
         if isinstance(first_name, str):
