@@ -62,7 +62,6 @@ class TaasAppService(BaseHTTPRequestHandler):
             status = self.HTTP_STATUS_RESPONSE_CODES['OK'].value
             responseBody['data'] = 'Hello world'
         if '/order' in path:
-            print("in endpoint")
             responseBody = getOrders(paramsDict)
             status = self.HTTP_STATUS_RESPONSE_CODES[responseBody["status"]].value
             # We can define other GET API endpoints here like so. See that when we can utilize the 'in' operator

@@ -20,7 +20,6 @@ def registerUser(customerData):
         else:
             response = {'status': 'CONFLICT', 'data': {
                 'msg': 'Email is already registered'}}
-        # TODO: create session now
     except ValueError as err:
         response = {'status': 'CONFLICT', 'data': {
             'msg': err

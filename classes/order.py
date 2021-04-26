@@ -2,13 +2,18 @@ import re
 
 
 class Order:
-    def __init__(self, serviceType, pickupAddress, dropoffAddress, customerId,  status="pending confirmation", route=None):
-        self.serviceType = serviceType
-        self.pickupAddress = pickupAddress
-        self.dropoffAddress = dropoffAddress
-        self.customerId = customerId
+    def __init__(self, serviceType=None, pickupAddress=None, dropoffAddress=None, customerId=None,  status="pending confirmation", route=None):
+        if serviceType != None:
+            self.setServiceType(serviceType) 
+        if pickupAddress != None:
+            self.setPickupAddress(pickupAddress)
+        if dropoffAddress != None:
+            self.setDropoffAddress(dropoffAddress)
+        if customerId != None:
+            self.setCustomerId(customerId)
         self.route = route
-        self.status = status
+        if status != None:
+            self.setStatus(status)
 
     def setServiceType(self, serciveType):
         if isValidStringInput(serciveType):
