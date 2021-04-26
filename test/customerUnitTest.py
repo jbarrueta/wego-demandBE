@@ -60,8 +60,7 @@ class TestCustomerSetters(TestCustomer):
         user = Customer()
         user.setEmail(validEmail1)
         correctValue = validEmail1
-        self.assertEqual(user.getEmail(), correctValue,
-                         msg=f"Error in the email setter and getter values:\n\n{user.getEmail()}\n\n{correctValue}")
+        self.assertEqual(user.getEmail(), correctValue, msg=f"Error in the email setter and getter values:\n\n{user.getEmail()}\n\n{correctValue}")
 
     def test_invalid_email_setter_1(self):
         with self.assertRaises(ValueError, msg="Values passed should have raised a Value Error"):

@@ -1,5 +1,4 @@
 from controllers.order import getOrders, requestOrder, updateOrder
-from classes.order import Order
 import logging
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer

@@ -11,7 +11,7 @@ class Customer:
             self.setEmail(email)
         if password != None:
             self.setPassword(password)
-
+    
     def setFirstName(self, first_name):
         if isinstance(first_name, str):
             self.first_name = first_name
