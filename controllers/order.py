@@ -20,17 +20,10 @@ def requestOrder(postBody):
         orderId = orders.insert_one(orderObj).inserted_id
         address1 = (orderObj["pickupAddress"]).replace(" ", "+")
         address2 = (orderObj["dropoffAddress"]).replace(" ", "+")
-
-        #### Comment out this block when supply is up on server ####
-        # response = {'status': 'OK', 'data': {
-        #        "id": orderId, "publicId": publicId, "status": orderObj["status"]}}
-        ########################################################################
-
         #### Uncomment this block when supply is up on server ####
         routeResponse = requests.get(
             f"http://localhost:8081/vehicles/req?service_type={orderObj['serviceType']}&order_id={orderId}&customer_id={orderObj['customerId']}&destination={address1}")
         # routeResponse = requests.get(f"https://supply.team12.sweispring21.tk/api/vehicles/req?service_type={orderObj['serviceType']}&order_id={orderId}&customer_id={orderObj['customerId']}&destination={address1}")
-        ########################################################################
         responseObj = routeResponse.json()
         routeObj = responseObj["data"]
         if responseObj['status'] == "OK":
@@ -63,20 +56,17 @@ def updateOrder(postBody):
     try:
         requestObj = {"vehicle_id": str(
             postBody['vehicle_id']), 'current_location': postBody['current_location'], 'vehicle_status': postBody['vehicle_status']}
-        print(requestObj)
         # TODO: comment line 64 and uncomment line 65
         updateResponse = requests.post(
             "http://localhost:8081/vehicle/update", json.dumps(requestObj))
         # updateResponse = requests.post("https://supply.team12.sweispring21.tk/api/vehicle/update", json.dumps(requestObj))
         responseObj = updateResponse.json()
         updateObj = responseObj["data"]
-        print(updateObj)
         client = mongoConnect()
         db = client.team12_demand
         orders = db.orders
         update = orders.update_one({"_id": ObjectId(postBody['order_id'])}, {
             "$set": {"status": postBody['order_status']}})
-        print(update, orders.find_one({"_id": ObjectId(postBody['order_id'])}))
         response = {'status': responseObj['status'], 'data': updateObj}
 
     except Exception as err:
@@ -93,9 +83,7 @@ def getOrders(orderParams):
         client = mongoConnect()
         db = client.team12_demand
         orders = db.orders
-        print(orderParams)
         if("_id" in orderParams):
-            print("in")
             orderParams['_id'] = ObjectId(orderParams['_id'])
         docs = orders.find(orderParams)
         orderList = []
