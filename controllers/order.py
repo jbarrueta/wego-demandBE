@@ -20,10 +20,8 @@ def requestOrder(postBody):
         orderId = orders.insert_one(orderObj).inserted_id
         address1 = (orderObj["pickupAddress"]).replace(" ", "+")
         address2 = (orderObj["dropoffAddress"]).replace(" ", "+")
-        #### Uncomment this block when supply is up on server ####
         routeResponse = requests.get(
-            f"http://localhost:8081/vehicles/req?service_type={orderObj['serviceType']}&order_id={orderId}&customer_id={orderObj['customerId']}&destination={address1}")
-        # routeResponse = requests.get(f"https://supply.team12.sweispring21.tk/api/vehicles/req?service_type={orderObj['serviceType']}&order_id={orderId}&customer_id={orderObj['customerId']}&destination={address1}")
+            f"https://supply.team12.sweispring21.tk/api/vehicles/req?service_type={orderObj['serviceType']}&order_id={orderId}&customer_id={orderObj['customerId']}&destination={address1}")
         responseObj = routeResponse.json()
         routeObj = responseObj["data"]
         if responseObj['status'] == "OK":
@@ -56,10 +54,8 @@ def updateOrder(postBody):
     try:
         requestObj = {"vehicle_id": str(
             postBody['vehicle_id']), 'current_location': postBody['current_location'], 'vehicle_status': postBody['vehicle_status']}
-        # TODO: comment line 64 and uncomment line 65
         updateResponse = requests.post(
-            "http://localhost:8081/vehicle/update", json.dumps(requestObj))
-        # updateResponse = requests.post("https://supply.team12.sweispring21.tk/api/vehicle/update", json.dumps(requestObj))
+            "https://supply.team12.sweispring21.tk/api/vehicle/update", json.dumps(requestObj))
         responseObj = updateResponse.json()
         updateObj = responseObj["data"]
         client = mongoConnect()
