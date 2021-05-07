@@ -151,7 +151,7 @@ if __name__ == '__main__':
     # Ports are part of a socket connection made between a server and a client. Ports 0-1023 are
     # reserved for common TCP/IP applications and shouldn't be used here. Communicate with your
     # DevOps member to find out which port you should be running your application off of.
-    serverPort = 8082
+    serverPort = 50002
     appServer = HTTPServer((hostName, serverPort), TaasAppService)
     logging.info('Server started http://%s:%s' % (hostName, serverPort))
 

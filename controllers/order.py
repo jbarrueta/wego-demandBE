@@ -4,7 +4,7 @@ from bson.objectid import ObjectId
 import requests
 from classes.order import Order
 from mongo.mongoConfig import mongoConnect
-
+from config.config import config
 
 def requestOrder(postBody):
     response = {}
@@ -21,7 +21,7 @@ def requestOrder(postBody):
         address1 = (orderObj["pickupAddress"]).replace(" ", "+")
         address2 = (orderObj["dropoffAddress"]).replace(" ", "+")
         routeResponse = requests.get(
-            f"https://supply.team12.sweispring21.tk/api/vehicles/req?service_type={orderObj['serviceType']}&order_id={orderId}&customer_id={orderObj['customerId']}&destination={address1}")
+            f"https://supply.{config['baseURL']}/api/vehicles/req?service_type={orderObj['serviceType']}&order_id={orderId}&customer_id={orderObj['customerId']}&destination={address1}")
         responseObj = routeResponse.json()
         routeObj = responseObj["data"]
         if responseObj['status'] == "OK":
@@ -55,7 +55,7 @@ def updateOrder(postBody):
         requestObj = {"vehicle_id": str(
             postBody['vehicle_id']), 'current_location': postBody['current_location'], 'vehicle_status': postBody['vehicle_status']}
         updateResponse = requests.post(
-            "https://supply.team12.sweispring21.tk/api/vehicle/update", json.dumps(requestObj))
+            f"https://supply.{config['baseURL']}/api/vehicle/update", json.dumps(requestObj))
         responseObj = updateResponse.json()
         updateObj = responseObj["data"]
         client = mongoConnect()
